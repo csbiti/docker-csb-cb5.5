@@ -1,0 +1,18 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag csbiti/docker-csb-cb5.5:latest
+      - name: Lets login bitch
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push to Registry
+        run: docker push csbiti/docker-csb-cb5.5

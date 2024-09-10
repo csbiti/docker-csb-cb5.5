@@ -24,7 +24,7 @@ RUN wget https://download.oracle.com/otn_software/linux/instantclient/2114000/in
     && unzip instantclient-basic-linux.x64-21.14.0.0.0dbru.zip -d /usr/lib/oracle/21 \
     && rm instantclient-basic-linux.x64-21.14.0.0.0dbru.zip
 
-
+RUN pip uninstall -y numpy pandas
 RUN pip install --upgrade pip
 RUN pip install pyyaml
 RUN pip install paramiko

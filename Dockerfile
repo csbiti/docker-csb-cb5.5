@@ -34,4 +34,5 @@ RUN pip install unidecode==1.3.8
 RUN pip install cx_Oracle
 RUN pip install dynaconf
 RUN pip install sqlalchemy
+RUN pip install openpyxl
 

@@ -1,26 +1,28 @@
-FROM python:3.11-slim
+FROM python:3.12-bullseye
 
-# Installer les dépendances du client Oracle et d'autres utilitaires nécessaires
-RUN apt-get update && apt-get install -y \
-    libaio1 \
-    wget \
-    unzip \
-    gcc \
-    libssl-dev \
-    build-essential
+# Set environment variables for Oracle client installation
+ENV ORACLE_HOME=/usr/lib/oracle/21/instantclient_21_14
+ENV LD_LIBRARY_PATH=$ORACLE_HOME
+ENV PATH=$ORACLE_HOME:$PATH
 
-# Télécharger et installer l'Oracle Instant Client
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
-    && unzip instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
-    && rm instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
-    && mv instantclient_21_10 /usr/lib/oracle \
-    && echo "/usr/lib/oracle" > /etc/ld.so.conf.d/oracle-instantclient.conf \
-    && ldconfig
+# Install required packages for Oracle client
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        unzip \
+        wget \
+        libaio1 \
+        libaio-dev \
+        vim \
+    && rm -rf /var/lib/apt/lists/*
 
-# Configurer le chemin de la bibliothèque Oracle
-ENV LD_LIBRARY_PATH=/usr/lib/oracle
+# Create the Oracle Instant Client directory
+RUN mkdir -p $ORACLE_HOME
 
-WORKDIR /usr/src/app
+# Download and install Oracle Instant Client
+WORKDIR $ORACLE_HOME
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/2114000/instantclient-basic-linux.x64-21.14.0.0.0dbru.zip \
+    && unzip instantclient-basic-linux.x64-21.14.0.0.0dbru.zip -d /usr/lib/oracle/21 \
+    && rm instantclient-basic-linux.x64-21.14.0.0.0dbru.zip
 
 
 RUN pip install --upgrade pip

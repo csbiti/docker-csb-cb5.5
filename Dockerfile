@@ -1,4 +1,4 @@
-FROM python:3.12-bullseye
+FROM python:3.10-slim
 
 # Set environment variables for Oracle client installation
 ENV ORACLE_HOME=/usr/lib/oracle/21/instantclient_21_14
@@ -28,8 +28,8 @@ RUN wget https://download.oracle.com/otn_software/linux/instantclient/2114000/in
 RUN pip install --upgrade pip
 RUN pip install pyyaml
 RUN pip install paramiko
-RUN pip install numpy
-RUN pip install pandas==1.4.3
+RUN pip install numpy==1.24.0
+RUN pip install pandas==1.5.3
 RUN pip install unidecode==1.3.8
 RUN pip install cx_Oracle
 RUN pip install dynaconf

@@ -1,15 +1,23 @@
 FROM python:3.11-slim
 
+# Installer les dépendances du client Oracle et d'autres utilitaires nécessaires
+RUN apt-get update && apt-get install -y \
+    libaio1 \
+    wget \
+    unzip \
+    gcc \
+    libssl-dev \
+    build-essential
 
-RUN apt-get update && apt-get install -y libaio1 wget unzip
+# Télécharger et installer l'Oracle Instant Client
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
+    && unzip instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
+    && rm instantclient-basiclite-linux.x64-21.10.0.0.0dbru.zip \
+    && mv instantclient_21_10 /usr/lib/oracle \
+    && echo "/usr/lib/oracle" > /etc/ld.so.conf.d/oracle-instantclient.conf \
+    && ldconfig
 
-# Télécharge et installe l'Oracle Instant Client
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linux.x64-19.8.0.0.0dbru.zip \
-    && unzip instantclient-basiclite-linux.x64-19.8.0.0.0dbru.zip \
-    && rm instantclient-basiclite-linux.x64-19.8.0.0.0dbru.zip \
-    && mv instantclient_19_8 /usr/lib/oracle
-
-# Configure le chemin de la bibliothèque Oracle
+# Configurer le chemin de la bibliothèque Oracle
 ENV LD_LIBRARY_PATH=/usr/lib/oracle
 
 WORKDIR /usr/src/app
